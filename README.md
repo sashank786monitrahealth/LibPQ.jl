@@ -97,6 +97,28 @@ pacman -S postgresql-libs
 Install PostgreSQL from [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) or build it yourself.
 Then find `libpq.dll` and make sure it's available for Julia to load.
 
+## Example
+```
+using NamedTuples;
+using DataStreams;
+using LibPQ;
+
+v_postgres_host = "my.postgresServer.us-west-1.rds.amazonaws.com"; # Input the hostname here
+v_postgres_dbname = "myPostGresDB"; # input the db name here 
+v_postgres_user = "mahesh";   # input the postgres user
+v_postgres_password = "myPass";  # input the password for the postgres user here 
+v_port ="5432"; # input the port number of postgres db here
+#create the connection here 
+conn_string = "host=" *v_postgres_host *" port=" *v_port *" dbname=" *v_postgres_dbname *" user=" *v_postgres_user *" password=" *v_postgres_password *"";
+conn = LibPQ.Connection(conn_string);
+data = fetch!(NamedTuple, execute(conn, "SELECT department_id FROM school_table WHERE subject_name = \$1", ["physics"]));
+close(conn);
+```
+To retrieve information from the data variable use the following:
+```
+data[:department_id]
+```
+
 ## Licenses
 
 ### `libpq` Source and PostgreSQL Documentation
